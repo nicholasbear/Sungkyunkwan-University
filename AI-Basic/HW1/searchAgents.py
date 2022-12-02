@@ -34,6 +34,7 @@ description for details.
 Good luck and happy searching!
 """
 
+from pickle import FALSE
 from game import Directions
 from game import Agent
 from game import Actions
@@ -308,6 +309,21 @@ class CornersProblem(search.SearchProblem):
         # Please add any code here which you would like to use
         # in initializing the problem
         "*** YOUR CODE HERE ***"
+        print("corner :",self.corners)
+        corner = [False,False,False,False] #코너 갔는지
+        if self.startingPosition == self.corners[0]:
+            corner[0] = True
+        
+        if self.startingPosition == self.corners[1]:
+            corner[1] = True
+        
+        if self.startingPosition == self.corners[2]:
+            corner[2] = True
+        
+        if self.startingPosition == self.corners[3]:
+            corner[3] = True
+        
+        self.startstate = (self.startingPosition,corner)
 
     def getStartState(self):
         """
@@ -315,6 +331,7 @@ class CornersProblem(search.SearchProblem):
         space)
         """
         "*** YOUR CODE HERE ***"
+        return self.startstate
         util.raiseNotDefined()
 
     def isGoalState(self, state):
@@ -322,6 +339,13 @@ class CornersProblem(search.SearchProblem):
         Returns whether this search state is a goal state of the problem.
         """
         "*** YOUR CODE HERE ***"
+        corner = state[1]
+
+        if corner[0] and corner[1] and corner[2] and corner[3] :
+            #print("corner: ",corner[0],corner[1],corner[2],corner[3])
+            return True
+        else:
+            return False
         util.raiseNotDefined()
 
     def expand(self, state):
@@ -340,6 +364,8 @@ class CornersProblem(search.SearchProblem):
             # Add a child state to the child list if the action is legal
             # You should call getActions, getActionCost, and getNextState.
             "*** YOUR CODE HERE ***"
+            next = self.getNextState(state,action) #담거
+            children.append((next,action,self.getActionCost(state,action,next)))
 
         self._expanded += 1 # DO NOT CHANGE
         return children
@@ -367,6 +393,21 @@ class CornersProblem(search.SearchProblem):
         dx, dy = Actions.directionToVector(action)
         nextx, nexty = int(x + dx), int(y + dy)
         "*** YOUR CODE HERE ***"
+        next = (nextx, nexty)
+        corner = list(state[1])
+        if next == self.corners[0]:
+            corner[0] = True
+        
+        if next == self.corners[1]:
+            corner[1] = True
+        
+        if next == self.corners[2]:
+            corner[2] = True
+        
+        if next == self.corners[3]:
+            corner[3] = True
+        
+        return (next,tuple(corner))
         util.raiseNotDefined()
 
     def getCostOfActionSequence(self, actions):
@@ -400,7 +441,24 @@ def cornersHeuristic(state, problem):
     walls = problem.walls # These are the walls of the maze, as a Grid (game.py)
 
     "*** YOUR CODE HERE ***"
-    return 0 # Default to trivial solution
+
+    heuristic = 0
+    now = state[0]
+    corner = state[1]
+    visit = []
+
+    for i in range(0,4):
+        if not corner[i]:
+            visit.append(corners[i])
+    
+    if len(visit) == 0:
+        return 0
+    
+    for i in visit:
+        distance = util.manhattanDistance(i, now)
+        if heuristic < distance:
+            heuristic = distance
+    return heuristic # Default to trivial solution
 
 class AStarCornersAgent(SearchAgent):
     "A SearchAgent for FoodSearchProblem using A* and your foodHeuristic"
@@ -516,7 +574,21 @@ def foodHeuristic(state, problem):
     """
     position, foodGrid = state
     "*** YOUR CODE HERE ***"
-    return 0
+    foodList = foodGrid.asList()
+    heuristic = 0
+    if len(foodList) == 0:
+        return heuristic
+    
+    num = -1
+    num1 = 0
+    for i in foodList:
+        num += 1
+        distance = util.manhattanDistance(i, position)
+        if heuristic < distance:
+            heuristic = distance
+            num1 = 0
+
+    return mazeDistance(position,foodList[num1],problem.startingGameState)
 
 class ClosestDotSearchAgent(SearchAgent):
     "Search for all food using a sequence of searches"

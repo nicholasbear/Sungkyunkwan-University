@@ -114,11 +114,59 @@ def depthFirstSearch(problem):
     print("Is the start a goal?", problem.isGoalState(problem.getStartState()))
     """
     "*** YOUR CODE HERE ***"
+    stack = util.Stack()
+    visited = []
+
+    start = problem.getStartState()
+    stack.push((start, [], 0))   #(child,action,stepCost)
+    if problem.isGoalState(start):
+        return []
+ 
+    while stack.isEmpty() == False :
+        top = stack.pop()
+        if problem.isGoalState(top[0]):
+                goal = top
+                break
+        if top[0] not in visited:
+            visited.append(top[0])
+            expand = problem.expand(top[0])
+            for next in expand:
+                if next[0] not in visited : #방문안한 노드면 추가
+                    action = top[1] + [next[1]]
+                    stack.push((next[0],action,next[2]))
+      
+    return goal[1]
     util.raiseNotDefined()
 
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
+    queue = util.Queue()
+    visited = []
+
+    start = problem.getStartState()
+    #print(problem.expand(start))
+    queue.push((start, [], 0))   #(child,action,stepCost)
+    if problem.isGoalState(start):
+        return []
+
+    while queue.isEmpty() == False :
+        top = queue.pop()
+        #print(top[0])
+        if problem.isGoalState(top[0]):
+            goal = top
+            #print(goal[1])
+            break
+        if top[0] not in visited:
+            visited.append(top[0])
+            expand = problem.expand(top[0])
+            for next in expand:
+                if next[0] not in visited : #방문안한 노드면 추가
+                    action = top[1] + [next[1]]
+                    #print(action)
+                    queue.push((next[0],action,next[2]))
+      
+    return goal[1]
     util.raiseNotDefined()
 
 def nullHeuristic(state, problem=None):
@@ -131,6 +179,32 @@ def nullHeuristic(state, problem=None):
 def aStarSearch(problem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
     "*** YOUR CODE HERE ***"
+    p_queue = util.PriorityQueue()
+    visited = []
+
+    start = problem.getStartState()
+    p_queue.push((start,[], 0),0)   #(child,action, stepCost)
+    if problem.isGoalState(start):
+        return []
+
+    while not p_queue.isEmpty():
+        top = p_queue.pop()
+        #print(top[0])
+        if problem.isGoalState(top[0]):
+            goal = top
+            #print(goal[1])
+            break
+        if top[0] not in visited:
+            visited.append(top[0])
+            expand = problem.expand(top[0])
+            for next in expand:
+                if next[0] not in visited : #방문안한 노드면 추가
+                    action = top[1] + [next[1]]
+                    cost = problem.getCostOfActionSequence(action)
+                    heuristicCost = cost + heuristic(next[0],problem)
+                    p_queue.push((next[0], action, cost),heuristicCost)
+
+    return goal[1]
     util.raiseNotDefined()
 
 
