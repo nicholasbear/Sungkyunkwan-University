@@ -1,0 +1,35 @@
+#!/bin/bash
+
+#Make "sse" directory on your home directory
+mkdir sse
+
+#create hello.c on the directory
+cd sse
+
+#ex is line editor : similar as vi
+#Here-scrept
+ex "hello.c" <<EOEX
+:i
+#include <stdio.h>
+
+int main(void)
+{
+	printf("hello, world\n");
+	return 0;
+}
+.
+:x
+EOEX
+
+#compile it
+gcc -o hello hello.c
+
+#run the program
+./hello
+
+#remove "sse" directory
+cd ..
+rm -r sse
+
+
+

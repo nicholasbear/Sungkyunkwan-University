@@ -1,0 +1,67 @@
+typedef struct Node{
+	int data;
+	struct node* next;
+}
+
+typedef struct CList{
+	Node*head;
+	Node* tail;
+	Node* cur;
+	Node* before;
+	int numofdata;
+}CList
+
+void ListInit(List *clist){
+	clist->head=NULL;
+	clist->tail=NULL;
+	clist->cur=NULL;
+	clist->before=NULL;
+	clist->numofdata=0;
+}
+
+void Listinsert(CList *clist,int data){  //tail뒤에 데이터추가
+	Node *newNode=(Node*)malloc(sizeof(Node));
+	newNode->data=data;
+	
+	if(clist->tail==NULL){
+		clist->tail=newNode;
+		clist->head->next=newNode;
+		newNode->next=newNode;
+	}
+	
+	else{
+		clist->tail->next=newNode;
+		clist->tail=newNode;
+		newnode->next=clist->head->next;
+	}
+}
+
+
+
+int Csearch(CList *clist, int data){  //데이터 찾기
+	if(clist->head->next==NULL)
+		return FALSE;
+
+	else
+		while(clist->cur->next!=NULL){
+			clist->cur=clist->head->next;
+			if(clist->cur->data==data)
+				return 1;
+			else
+				clist->before=clist->cur;
+				clist->cur=clist->cur->next;
+		}
+		if(clist->cur->data==data)
+			return 1;
+		else
+			return 0;
+}
+
+void RemoveClist(Clist *clist){ //데이터 삭제
+	위에 데이터찾는함수로 지우고 싶은 데이터의 노드를 찾는다 cur로 지정
+	clist->cur=clist->cur->next;
+	clist->before->next=clist->cur;
+}
+			
+		
+	

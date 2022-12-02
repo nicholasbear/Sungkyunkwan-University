@@ -1,0 +1,21 @@
+일단 뺴고 싶은 데이터를 cur로 지정했다고 하자
+
+void RemoveList(List *clist){
+	if(clist->cur->next==NULL){
+		clist->cur->prev->next==NULL;
+		clist->cur=clist->cur->prev;
+		clist->cur->next=NULL;
+	}
+
+	else if(clist->cur->prev==NULL){
+		clist->head->next==clist->cur->next;
+		clist->cur=clist->cur->next;
+		clist->cur->prev=NULL;
+	}
+	
+	else {
+		clist->cur->prev->next=clist->cur->next;
+		clist->cur->next->prev=clist->cur->prev;
+		clist->cur=clist->cur->next;
+	}
+}
